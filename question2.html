@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Number to Words</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+        }
+
+        input {
+            padding: 8px;
+            font-size: 16px;
+            width: 120px;
+        }
+
+        button {
+            padding: 8px 12px;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: darkblue;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Enter a Number (0 - 999)</h2>
+
+    <input type="text" id="numberInput" maxlength="3" oninput="validateInput(this)">
+    <button onclick="convertNumber()">Convert</button>
+
+    <div id="result"></div>
+    <div id="error" class="error"></div>
+
+    <script>
+        function validateInput(input) {
+            input.value = input.value.replace(/[^0-9]/g, '');
+        }
+
+        function convertNumber() {
+            var numStr = document.getElementById("numberInput").value;
+            var resultDiv = document.getElementById("result");
+            var errorDiv = document.getElementById("error");
+
+            resultDiv.textContent = "";
+            errorDiv.textContent = "";
+
+            if (numStr === "") {
+                errorDiv.textContent = "Please enter a number.";
+                return;
+            }
+
+            var number = parseInt(numStr);
+
+            if (number < 0 || number > 999) {
+                errorDiv.textContent = "Number must be between 0 and 999.";
+                return;
+            }
+
+            resultDiv.textContent = numberToWords(number);
+        }
+
+        function numberToWords(num) {
+            var ones = ["Zero","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"];
+            var teens = ["Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+            var tens = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+
+            if (num < 10) return ones[num];
+
+            if (num < 20) return teens[num - 10];
+
+            if (num < 100) {
+                return tens[Math.floor(num / 10)] + 
+                       (num % 10 !== 0 ? " " + ones[num % 10] : "");
+            }
+
+            var hundredPart = ones[Math.floor(num / 100)] + " Hundred";
+            var remainder = num % 100;
+
+            if (remainder === 0) return hundredPart;
+
+            if (remainder < 10)
+                return hundredPart + " " + ones[remainder];
+
+            if (remainder < 20)
+                return hundredPart + " " + teens[remainder - 10];
+
+            return hundredPart + " " + 
+                   tens[Math.floor(remainder / 10)] +
+                   (remainder % 10 !== 0 ? " " + ones[remainder % 10] : "");
+        }
+    </script>
+
+</body>
+</html>
